@@ -14,7 +14,7 @@ final class SwiftFountainParserTests: XCTestCase {
         XCTAssertEqual(SwiftFountainParser.getElementType(text: "==="), .pageBreak)
     }
     
-    func textCreateToken() throws {
+    func testCreateToken() throws {
         XCTAssertEqual(SwiftFountainParser.createToken(text: "title: Screenplay Title").type, .titlePage)
         XCTAssertEqual(SwiftFountainParser.createToken(text: "INT. BEDROOM - DAY").type, .sceneHeading)
         XCTAssertEqual(SwiftFountainParser.createToken(text: "#1#").type, .sceneNumber)
@@ -22,7 +22,7 @@ final class SwiftFountainParserTests: XCTestCase {
         XCTAssertEqual(SwiftFountainParser.createToken(text: "CARTER\nThis is going to be good").type, .dialogue)
         XCTAssertEqual(SwiftFountainParser.createToken(text: "(softly)").type, .parenthetical)
         XCTAssertEqual(SwiftFountainParser.createToken(text: "He walked across the room.").type, .action)
-        XCTAssertEqual(SwiftFountainParser.createToken(text: "title: Screenplay Title").type, .centered)
+        XCTAssertEqual(SwiftFountainParser.createToken(text: "> centered text").type, .centered)
         XCTAssertEqual(SwiftFountainParser.createToken(text: "# Act 1").type, .section)
         XCTAssertEqual(SwiftFountainParser.createToken(text: "= Events begin to unfold").type, .synopsis)
         XCTAssertEqual(SwiftFountainParser.createToken(text: "[[A note]]").type, .note)
