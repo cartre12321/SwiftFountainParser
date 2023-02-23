@@ -7,7 +7,11 @@
 
 import Foundation
 
-public struct FountainScript {
+public class FountainScript {
     var elements: [FountainElement]
     var sceneCount: Int { self.elements.filter({ $0.type == .sceneHeading(text: $0.content) }).count }
+    
+    init(elements: [FountainElement]) {
+        self.elements = elements
+    }
 }
