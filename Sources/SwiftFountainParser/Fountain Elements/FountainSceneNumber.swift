@@ -7,8 +7,12 @@
 
 import Foundation
 
-public class FountainSceneNumber: FountainElement {
+public class FountainSceneNumber: FountainInlineElement {
+    
+    override var type: FountainElementToken {
+        .sceneNumber(text: self.content)
+    }
     init(content: String) {
-        super.init(content: content, allowsChildren: false, regex: FountainTokenType.sceneNumber.regex)
+        super.init(content: content, allowsChildren: false)
     }
 }

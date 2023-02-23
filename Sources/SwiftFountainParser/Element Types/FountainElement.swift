@@ -9,18 +9,23 @@ import Foundation
 
 public class FountainElement {
     
-    private let regex: String
+    private var regex: String {
+        self.type.regex
+    }
     
+    var type: FountainElementToken {
+        .action(text: self.content)
+    }
     var lines: [String]
     let allowsChildren: Bool
     var childElements: [FountainElement]?
     
     var content: String
     
-    init(content: String, allowsChildren: Bool, regex: String) {
+    init(content: String, allowsChildren: Bool) {
         self.content = content
         self.lines = content.components(separatedBy: "\n")
         self.allowsChildren = allowsChildren
-        self.regex = regex
     }
+    
 }

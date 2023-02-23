@@ -7,8 +7,13 @@
 
 import Foundation
 
-public class FountainPageBreak: FountainElement {
-    init(content: String) {
-        super.init(content: content, allowsChildren: false, regex: FountainTokenType.pageBreak.regex)
+public class FountainPageBreak: FountainBlockElement {
+    
+    override var type: FountainElementToken {
+        .pageBreak
+    }
+    
+    init() {
+        super.init(content: "===", allowsChildren: false)
     }
 }

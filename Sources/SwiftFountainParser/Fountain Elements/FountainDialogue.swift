@@ -7,8 +7,20 @@
 
 import Foundation
 
-public class FountainDialogue: FountainElement {
-    init(content: String) {
-        super.init(content: content, allowsChildren: true, regex: FountainTokenType.dialogue.regex)
+public class FountainDialogue: FountainBlockElement {
+    
+    override var type: FountainElementToken {
+        .dialogue(text: self.content)
+    }
+    
+    var isDual: Bool
+    
+    var character: String {
+        self.lines[0]
+    }
+    var line: String { self.lines[1...].joined(separator: "\n") }
+    init(content: String, isDual: Bool = false) {
+        self.isDual = isDual
+        super.init(content: content, allowsChildren: true)
     }
 }

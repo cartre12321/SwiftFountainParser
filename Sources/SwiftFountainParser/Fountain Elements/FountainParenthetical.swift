@@ -7,8 +7,13 @@
 
 import Foundation
 
-public class FountainParenthetical: FountainElement {
+public class FountainParenthetical: FountainLineElement {
+    
+    override var type: FountainElementToken {
+        .parenthetical(text: self.content)
+    }
+    
     init(content: String) {
-        super.init(content: content, allowsChildren: false, regex: FountainTokenType.parenthetical.regex)
+        super.init(content: content, allowsChildren: false)
     }
 }

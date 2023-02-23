@@ -7,8 +7,12 @@
 
 import Foundation
 
-public class FountainSceneHeading: FountainElement {
+public class FountainSceneHeading: FountainBlockElement {
+    
+    override var type: FountainElementToken {
+        .sceneHeading(text: self.content)
+    }
     init(content: String) {
-        super.init(content: content, allowsChildren: false, regex: FountainTokenType.sceneHeading.regex)
+        super.init(content: content, allowsChildren: false)
     }
 }

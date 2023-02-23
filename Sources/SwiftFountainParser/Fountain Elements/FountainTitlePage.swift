@@ -7,8 +7,13 @@
 
 import Foundation
 
-public class FountainTitlePage: FountainElement {
+public class FountainTitlePage: FountainLineElement {
+    
+    override var type: FountainElementToken {
+        .titlePage(text: self.content)
+    }
+    
     init(content: String) {
-        super.init(content: content, allowsChildren: false, regex: FountainTokenType.titlePage.regex)
+        super.init(content: content, allowsChildren: false)
     }
 }

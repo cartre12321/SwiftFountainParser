@@ -7,8 +7,13 @@
 
 import Foundation
 
-public class FountainSection: FountainElement {
+public class FountainSection: FountainBlockElement {
+    
+    override var type: FountainElementToken {
+        .section(text: self.content)
+    }
+    
     init(content: String) {
-        super.init(content: content, allowsChildren: false, regex: FountainTokenType.section.regex)
+        super.init(content: content, allowsChildren: false)
     }
 }

@@ -7,8 +7,9 @@
 
 import Foundation
 
-public class FountainAction: FountainElement {
+public class FountainAction: FountainBlockElement {
+    
     init(content: String) {
-        super.init(content: content, allowsChildren: true, regex: FountainTokenType.action.regex)
+        super.init(content: content, allowsChildren: true)
     }
 }

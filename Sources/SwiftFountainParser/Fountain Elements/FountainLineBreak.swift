@@ -7,8 +7,13 @@
 
 import Foundation
 
-public class FountainLineBreak: FountainElement {
-    init(content: String) {
-        super.init(content: content, allowsChildren: false, regex: FountainTokenType.lineBreak.regex)
+public class FountainLineBreak: FountainLineElement {
+    
+    override var type: FountainElementToken {
+        .lineBreak
+    }
+    
+    init() {
+        super.init(content: "  ", allowsChildren: false)
     }
 }

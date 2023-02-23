@@ -7,8 +7,18 @@
 
 import Foundation
 
-public class FountainBoneyard: FountainElement {
+public class FountainBoneyard: FountainBlockElement, FountainDelimiter {
+    
+    var openSymbol: String = "/*"
+    
+    var closeSymbol: String = "*/"
+    
+    
+    override var type: FountainElementToken {
+        .boneyard(text: self.content)
+    }
+    
     init(content: String) {
-        super.init(content: content, allowsChildren: true, regex: FountainTokenType.boneyard.regex)
+        super.init(content: content, allowsChildren: true)
     }
 }
