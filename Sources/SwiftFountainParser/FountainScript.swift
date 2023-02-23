@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class FountainScript {
+open class FountainScript {
     var elements: [FountainElement]
     var sceneCount: Int { self.elements.filter({ $0.type == .sceneHeading(text: $0.content) }).count }
     
