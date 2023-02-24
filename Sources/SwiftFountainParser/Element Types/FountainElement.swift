@@ -9,14 +9,16 @@ import Foundation
 
 public class FountainElement {
     
-    private var regex: String {
+    private var regex: NSRegularExpression {
         self.type.regex
     }
     
     var type: FountainElementToken {
         .action(text: self.content)
     }
-    var lines: [String]
+    var lines: [String] {
+        content.components(separatedBy: "\n")
+    }
     let allowsChildren: Bool
     var childElements: [FountainElement]?
     
@@ -24,7 +26,6 @@ public class FountainElement {
     
     init(content: String, allowsChildren: Bool) {
         self.content = content
-        self.lines = content.components(separatedBy: "\n")
         self.allowsChildren = allowsChildren
     }
     

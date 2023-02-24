@@ -14,4 +14,6 @@ open class FountainScript {
     init(elements: [FountainElement]) {
         self.elements = elements
     }
+    
+    
 }

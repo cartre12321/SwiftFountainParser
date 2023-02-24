@@ -10,11 +10,10 @@ import Foundation
 public class FountainBlockElement: FountainElement {
     
     public static var allCases: [FountainElementToken] {
-        FountainElementToken.allCases
+        FountainElementToken.allCases.filter { $0.canBeBlock }
     }
     
     override init(content: String, allowsChildren: Bool) {
         super.init(content: content, allowsChildren: allowsChildren)
-        self.childElements = SwiftFountainParser().parseLines(content)
     }
 }

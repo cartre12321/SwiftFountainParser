@@ -7,7 +7,11 @@
 
 import Foundation
 
-public class FountainBoldItalicUnderline: FountainEmphasis {
+public class FountainBoldItalicUnderline: FountainEmphasis, FountainDelimiter {
+    var openSymbol: String = "_***"
+    
+    var closeSymbol: String = "***_"
+    
     init(content: String) {
         super.init(content: content, style: .boldItalicUnderline)
     }

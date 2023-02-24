@@ -15,7 +15,6 @@ public class FountainLineElement: FountainElement {
     
     override init(content: String, allowsChildren: Bool) {
         super.init(content: content, allowsChildren: allowsChildren)
-        self.childElements = SwiftFountainParser().parseInline(content)
     }
     
 }

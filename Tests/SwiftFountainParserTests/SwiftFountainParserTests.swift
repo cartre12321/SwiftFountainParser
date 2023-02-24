@@ -104,6 +104,8 @@ final class SwiftFountainParserTests: XCTestCase {
 
         ## Closing Image
         
+        Action line that includes **bold**, *italic*, and _underlined_ text.
+        
         */
         """
         
@@ -118,6 +120,16 @@ final class SwiftFountainParserTests: XCTestCase {
                 """)
             } else {
                 print("\(element): \(element.content)")
+            }
+            if let children = element.childElements {
+                for child in children {
+                    print("    \(child): \(child.content)")
+                    if let grandChildren = child.childElements {
+                        for grandChild in grandChildren {
+                            print("        \(grandChild): \(grandChild.content)")
+                        }
+                    }
+                }
             }
         }
         

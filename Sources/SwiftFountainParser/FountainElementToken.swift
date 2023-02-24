@@ -36,38 +36,38 @@ public enum FountainElementToken: Equatable, CaseIterable {
     
     case emphasis(text: String, style: FountainEmphasisStyle)
     
-    internal var regex: String {
+    internal var regex: NSRegularExpression {
         switch self {
         case .titlePage:
-            return #"^(?i)((?:title|credit|author[s]?|source|notes|draft date|date|contact|copyright)\:)"#
+            return try! NSRegularExpression(pattern: #"^(?i)((?:title|credit|author[s]?|source|notes|draft date|date|contact|copyright)\:)"#)
         case .sceneHeading:
-            return #"^(?i)((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)"#
+            return try! NSRegularExpression(pattern: #"^(?i)((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)"#)
         case .sceneNumber:
-            return #"( *#(.+)# *)"#
+            return try! NSRegularExpression(pattern: #"( *#(.+)# *)"#)
         case .dialogue:
-            return #"^([A-Z*_]+[0-9A-Z (._\-')]*)(\^?)?(?:\n(?!\n+))([\s\S]+)"#
+            return try! NSRegularExpression(pattern: #"^([A-Z*_]+[0-9A-Z (._\-')]*)(\^?)?(?:\n(?!\n+))([\s\S]+)"#)
         case .parenthetical:
-            return #"^(\(.+\))$"#
+            return try! NSRegularExpression(pattern: #"^(\(.+\))$"#)
         case .action:
-            return #"^(.+)"#
+            return try! NSRegularExpression(pattern: #"^(.+)"#)
         case .centered:
-            return #"^(?:> *)(.+)(?: *<)(\n.+)*"#
+            return try! NSRegularExpression(pattern: #"^(?:> *)(.+)(?: *<)(\n.+)*"#)
         case .transition:
-            return #"^((?:FADE (?:TO BLACK|OUT)|CUT TO BLACK)\.|.+ TO\:)|^(?:> *)(.+)"#
+            return try! NSRegularExpression(pattern: #"^((?:FADE (?:TO BLACK|OUT)|CUT TO BLACK)\.|.+ TO\:)|^(?:> *)(.+)"#)
         case .section:
-            return #"^(#+)(?: *)(.*)"#
+            return try! NSRegularExpression(pattern: #"^(#+)(?: *)(.*)"#)
         case .synopsis:
-            return #"^(?:\=(?!\=+) *)(.*)"#
+            return try! NSRegularExpression(pattern: #"^(?:\=(?!\=+) *)(.*)"#)
         case .note:
-            return #"^(?:\[{2}(?!\[+))(.+)(?:\]{2}(?!\[+))$"#
+            return try! NSRegularExpression(pattern: #"^(?:\[{2}(?!\[+))(.+)(?:\]{2}(?!\[+))$"#)
         case .inlineNote:
-            return #"(?:\[{2}(?!\[+))([\s\S]+?)(?:\]{2}(?!\[+))"#
+            return try! NSRegularExpression(pattern: #"(?:\[{2}(?!\[+))([\s\S]+?)(?:\]{2}(?!\[+))"#)
         case .boneyard:
-            return #"(^\/\*|^\*\/)$"#
+            return try! NSRegularExpression(pattern: #"(^\/\*|^\*\/)$"#)
         case .pageBreak:
-            return #"^\={3,}$"#
+            return try! NSRegularExpression(pattern: #"^\={3,}$"#)
         case .lineBreak:
-            return #"^ {2}$"#
+            return try! NSRegularExpression(pattern: #"^ {2}$"#)
         case .emphasis(text: _, style: let style):
             return style.regex
         }
@@ -122,6 +122,43 @@ public enum FountainElementToken: Equatable, CaseIterable {
             case .underline:
                 return FountainUnderline(content: text)
             }
+        }
+    }
+    
+    public var canBeBlock: Bool {
+        switch self {
+        case .titlePage:
+            return true
+        case .sceneHeading:
+            return true
+        case .sceneNumber:
+            return false
+        case .dialogue:
+            return true
+        case .parenthetical:
+            return false
+        case .action:
+            return true
+        case .centered:
+            return true
+        case .transition:
+            return true
+        case .section:
+            return true
+        case .synopsis:
+            return true
+        case .note:
+            return true
+        case .inlineNote:
+            return false
+        case .boneyard:
+            return true
+        case .pageBreak:
+            return true
+        case .lineBreak:
+            return false
+        case .emphasis:
+            return false
         }
     }
     
@@ -234,22 +271,22 @@ public enum FountainEmphasisStyle: CaseIterable {
     case italic
     case underline
     
-    internal var regex: String {
+    internal var regex: NSRegularExpression {
         switch self {
         case .boldItalicUnderline:
-            return #"(_{1}\*{3}(?=.+\*{3}_{1})|\*{3}_{1}(?=.+_{1}\*{3}))(.+?)(\*{3}_{1}|_{1}\*{3})"#
+            return try! NSRegularExpression(pattern: #"(_{1}\*{3}(?=.+\*{3}_{1})|\*{3}_{1}(?=.+_{1}\*{3}))(.+?)(\*{3}_{1}|_{1}\*{3})"#)
         case .boldUnderline:
-            return #"(_{1}\*{2}(?=.+\*{2}_{1})|\*{2}_{1}(?=.+_{1}\*{2}))(.+?)(\*{2}_{1}|_{1}\*{2})"#
+            return try! NSRegularExpression(pattern: #"(_{1}\*{2}(?=.+\*{2}_{1})|\*{2}_{1}(?=.+_{1}\*{2}))(.+?)(\*{2}_{1}|_{1}\*{2})"#)
         case .italicUnderline:
-            return #"(?:_{1}\*{1}(?=.+\*{1}_{1})|\*{1}_{1}(?=.+_{1}\*{1}))(.+?)(\*{1}_{1}|_{1}\*{1})"#
+            return try! NSRegularExpression(pattern: #"(?:_{1}\*{1}(?=.+\*{1}_{1})|\*{1}_{1}(?=.+_{1}\*{1}))(.+?)(\*{1}_{1}|_{1}\*{1})"#)
         case .boldItalic:
-            return #"(\*{3}(?=.+\*{3}))(.+?)(\*{3})"#
+            return try! NSRegularExpression(pattern: #"(\*{3}(?=.+\*{3}))(.+?)(\*{3})"#)
         case .bold:
-            return #"(\*{2}(?=.+\*{2}))(.+?)(\*{2})"#
+            return try! NSRegularExpression(pattern: #"(\*{2}(?=.+\*{2}))(.+?)(\*{2})"#)
         case .italic:
-            return #"(\*{1}(?=.+\*{1}))(.+?)(\*{1})"#
+            return try! NSRegularExpression(pattern: #"(\*{1}(?=.+\*{1}))(.+?)(\*{1})"#)
         case .underline:
-            return #"(_{1}(?=.+_{1}))(.+?)(_{1})"#
+            return try! NSRegularExpression(pattern: #"(_{1}(?=.+_{1}))(.+?)(_{1})"#)
         }
     }
     
