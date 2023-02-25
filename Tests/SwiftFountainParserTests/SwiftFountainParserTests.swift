@@ -111,33 +111,13 @@ final class SwiftFountainParserTests: XCTestCase {
         
         let scriptElements = SwiftFountainParser().parseScript(script)
         
-        for element in scriptElements.elements {
-            if element.type == FountainElementToken.dialogue(text: element.content) {
-                print("""
-                \(element):
-                    character: \((element as! FountainDialogue).character)
-                    line: \((element as! FountainDialogue).line)
-                """)
-            } else {
-                print("\(element): \(element.content)")
-            }
-            if let children = element.childElements {
-                for child in children {
-                    print("    \(child): \(child.content)")
-                    if let grandChildren = child.childElements {
-                        for grandChild in grandChildren {
-                            print("        \(grandChild): \(grandChild.content)")
-                        }
-                    }
-                }
-            }
-        }
+        let scriptPath = URL(fileURLWithPath: "/Users/carterriddall/Desktop/script/", isDirectory: true)
         
-        print("\n\n\n")
-        for element in scriptElements.elements {
-            print("\(element): \(element.allowsChildren)")
+        if #available(macOS 13.0, *) {
+            try scriptElements.toHTML().write(to: scriptPath.appending(component: "script.html"), atomically: true, encoding: .utf8)
+        } else {
+            try scriptElements.toHTML().write(to: scriptPath.appendingPathComponent("script.html"), atomically: true, encoding: .utf8)
         }
-        print("\n\n\n")
         
     }
 }

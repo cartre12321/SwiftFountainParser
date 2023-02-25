@@ -1,0 +1,86 @@
+div.script {
+  width: 800px;
+  background: #fffffc;
+  color: #000000;
+  border: 1px solid #333;
+  padding: 5px 14px 15px 14px !important;
+  margin-bottom: 16px !important;
+  margin-left: 20px !important;
+}
+
+.title-page {
+}
+
+.scene-heading {
+  padding-top: 1.5ex !important;
+}
+
+.scene-number {
+}
+
+.character {
+  padding-top: 1.5ex !important;
+  padding-left: 30% !important;
+}
+
+.dialogue {
+  padding-left: 20% !important;
+  padding-right: 20% !important;
+  padding-bottom: 0 !important;
+}
+
+.parenthetical {
+  padding-left: 32% !important;
+  padding-right: 30% !important;
+  padding-bottom: 0 !important;
+}
+
+.action {
+  padding-top: 1.5ex !important;
+}
+
+.centered {
+  align-items: center;
+}
+
+.transition {
+}
+
+.section {
+}
+
+.synopsis {
+}
+
+.note {
+}
+
+.inline-note {
+}
+
+.boneyard {
+}
+
+.page-break {
+}
+
+.line-break {
+}
+
+.bold-italic-underline {
+}
+
+.italic-underline {
+}
+
+.bold-italic {
+}
+
+.bold {
+}
+
+.italic {
+}
+
+.underline {
+}

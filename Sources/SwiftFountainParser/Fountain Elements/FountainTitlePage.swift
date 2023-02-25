@@ -14,6 +14,6 @@ public class FountainTitlePage: FountainLineElement {
     }
     
     init(content: String) {
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content, allowsChildren: true)
     }
 }
