@@ -9,11 +9,11 @@ import Foundation
 
 public class FountainPageBreak: FountainBlockElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .pageBreak
     }
     
     init() {
-        super.init(content: "===", allowsChildren: false)
+        super.init(content: "===")
     }
 }

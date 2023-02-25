@@ -9,7 +9,7 @@ import Foundation
 
 public class FountainEmphasis: FountainInlineElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .emphasis(text: self.content, style: self.style)
     }
     
@@ -17,6 +17,6 @@ public class FountainEmphasis: FountainInlineElement {
     
     init(content: String, style: FountainEmphasisStyle) {
         self.style = style
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content)
     }
 }

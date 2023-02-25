@@ -9,11 +9,11 @@ import Foundation
 
 public class FountainParenthetical: FountainLineElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .parenthetical(text: self.content)
     }
     
     init(content: String) {
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content)
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 
 public class FountainDialogue: FountainBlockElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .dialogue(text: self.content)
     }
     
@@ -19,8 +19,9 @@ public class FountainDialogue: FountainBlockElement {
         self.lines[0]
     }
     var line: String { self.lines[1...].joined(separator: "\n") }
+    
     init(content: String, isDual: Bool = false) {
         self.isDual = isDual
-        super.init(content: content, allowsChildren: true)
+        super.init(content: content)
     }
 }

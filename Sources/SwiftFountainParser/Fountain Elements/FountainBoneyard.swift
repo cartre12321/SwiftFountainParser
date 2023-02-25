@@ -9,16 +9,15 @@ import Foundation
 
 public class FountainBoneyard: FountainBlockElement, FountainDelimiter {
     
-    var openSymbol: String = "/*"
+    var openSymbol: String { "/*" }
+    var closeSymbol: String { "*/" }
     
-    var closeSymbol: String = "*/"
     
-    
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .boneyard(text: self.content)
     }
     
-    init(content: String) {
-        super.init(content: content, allowsChildren: true)
+    init(content: String, parent: FountainElementToken? = nil, childElements: [FountainElement]? = nil) {
+        super.init(content: content)
     }
 }

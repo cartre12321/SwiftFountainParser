@@ -9,11 +9,11 @@ import Foundation
 
 public class FountainSynopsis: FountainBlockElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .synopsis(text: self.content)
     }
     
     init(content: String) {
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content)
     }
 }

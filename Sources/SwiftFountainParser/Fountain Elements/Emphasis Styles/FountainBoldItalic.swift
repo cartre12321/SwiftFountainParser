@@ -8,9 +8,9 @@
 import Foundation
 
 public class FountainBoldItalic: FountainEmphasis, FountainDelimiter {
-    var openSymbol: String = "***"
     
-    var closeSymbol: String = "***"
+    var openSymbol: String { "***" }
+    var closeSymbol: String { "***" }
     
     init(content: String) {
         super.init(content: content, style: .boldItalic)

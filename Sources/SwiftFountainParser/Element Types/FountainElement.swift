@@ -10,23 +10,27 @@ import Foundation
 public class FountainElement {
     
     private var regex: NSRegularExpression {
-        self.type.regex
+        self.token.regex
     }
     
-    var type: FountainElementToken {
+    var token: FountainElementToken {
         .action(text: self.content)
     }
+    let parentToken: FountainElementToken?
     var lines: [String] {
         content.components(separatedBy: "\n")
     }
-    let allowsChildren: Bool
+    var allowedChildren: [FountainElementToken]? {
+        self.token.allowedChildren
+    }
     var childElements: [FountainElement]?
     
     var content: String
     
-    init(content: String, allowsChildren: Bool) {
+    init(content: String, parentToken: FountainElementToken? = nil, childElements: [FountainElement]? = nil) {
         self.content = content
-        self.allowsChildren = allowsChildren
+        self.parentToken = parentToken
+        self.childElements = childElements
     }
     
 }

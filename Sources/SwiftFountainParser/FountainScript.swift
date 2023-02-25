@@ -10,7 +10,7 @@ import Html
 
 open class FountainScript {
     var elements: [FountainElement]
-    var sceneCount: Int { self.elements.filter({ $0.type == .sceneHeading(text: $0.content) }).count }
+    var sceneCount: Int { self.elements.filter({ $0.token == .sceneHeading(text: $0.content) }).count }
     
     init(elements: [FountainElement]) {
         self.elements = elements
@@ -28,7 +28,7 @@ open class FountainScript {
     }
     
     func elementToHtml(_ element: FountainElement) -> Node {
-        switch element.type {
+        switch element.token {
         case .titlePage:
             return Node.element("p", attributes: [Attribute<Tag.P>.class("title-page")], [
                 .fragment([

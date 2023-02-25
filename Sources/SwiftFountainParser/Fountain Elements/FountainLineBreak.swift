@@ -9,11 +9,11 @@ import Foundation
 
 public class FountainLineBreak: FountainLineElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .lineBreak
     }
     
     init() {
-        super.init(content: "  ", allowsChildren: false)
+        super.init(content: "  ")
     }
 }

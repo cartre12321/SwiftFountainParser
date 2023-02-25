@@ -6,177 +6,137 @@ public struct SwiftFountainParser {
     public init() {
     }
     
-    func parseBlock(_ block: String) -> FountainElement? {
+    func lexBlock(_ block: String) -> FountainElementToken? {
         for elementType in FountainBlockElement.allCases {
             if elementType.regex.firstMatch(in: block, range: NSRange(location: 0, length: block.utf16.count)) != nil {
                 switch elementType {
                 case .titlePage:
-                    let element = FountainElementToken.titlePage(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.titlePage(text: block)
                 case .sceneHeading:
-                    let element = FountainElementToken.sceneHeading(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.sceneHeading(text: block)
                 case .dialogue:
-                    let element = FountainElementToken.dialogue(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.dialogue(text: block)
                 case .action:
-                    let element = FountainElementToken.action(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.action(text: block)
                 case .centered:
-                    let element = FountainElementToken.centered(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.centered(text: block)
                 case .transition:
-                    let element = FountainElementToken.transition(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.transition(text: block)
                 case .section:
-                    let element = FountainElementToken.section(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.section(text: block)
                 case .synopsis:
-                    let element = FountainElementToken.synopsis(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.synopsis(text: block)
                 case .note:
-                    let element = FountainElementToken.note(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.note(text: block)
                 case .boneyard:
-                    let element = FountainElementToken.boneyard(text: block).generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.boneyard(text: block)
                 case .pageBreak:
-                    let element = FountainElementToken.pageBreak.generateElement()
-                    if element.allowsChildren {
-                        element.childElements = parseLines(element.lines)
-                    }
-                    return element
+                    return FountainElementToken.pageBreak
                 default:
                     return nil
                 }
             }
         }
-        return FountainAction(content: block)
+        return FountainElementToken.action(text: block)
     }
-    func parseLines(_ lines: [String]) -> [FountainElement]? {
-        var elements: [FountainElement] = []
-        
+    func parseLines(_ lines: [FountainElementToken]) -> [FountainElementToken] {
+        var parsedLines: [FountainElementToken] = []
         for line in lines {
-            for elementType in FountainLineElement.allCases {
-                if elementType.regex.firstMatch(in: line, range: NSRange(location: 0, length: line.utf16.count)) != nil {
+            guard let allowedChildren = line.allowedChildren else { continue }
+            var parsedLine: FountainElementToken = .action(text: line.content)
+                for elementType in allowedChildren {
+                    if elementType.regex.firstMatch(in: line.content, range: NSRange(location: 0, length: line.content.utf16.count)) != nil {
+                        switch elementType {
+                        case .titlePage:
+                            parsedLine = .titlePage(text: line.content)
+                        case .sceneHeading:
+                            parsedLine = .sceneHeading(text: line.content)
+                        case .sceneNumber:
+                            parsedLine = .sceneNumber(text: line.content)
+                        case .dialogue:
+                            parsedLine = .dialogue(text: line.content)
+                        case .parenthetical:
+                            parsedLine = .parenthetical(text: line.content)
+                        case .action:
+                            break
+                        case .centered:
+                            parsedLine = .centered(text: line.content)
+                        case .transition:
+                            parsedLine = .transition(text: line.content)
+                        case .section:
+                            parsedLine = .section(text: line.content)
+                        case .synopsis:
+                            parsedLine = .synopsis(text: line.content)
+                        case .note:
+                            parsedLine = .note(text: line.content)
+                        case .inlineNote:
+                            parsedLine = .inlineNote(text: line.content)
+                        case .boneyard:
+                            parsedLine = .boneyard(text: line.content)
+                        case .pageBreak:
+                            parsedLine = .pageBreak
+                        case .lineBreak:
+                            parsedLine = .lineBreak
+                        case .emphasis(_, let style):
+                            parsedLine = .emphasis(text: line.content, style: style)
+                        }
+                    }
+                }
+            parsedLines.append(contentsOf: parseInline(parsedLine))
+        }
+        guard parsedLines != [] else { return lines }
+        return parsedLines
+    }
+    func parseInline(_ line: FountainElementToken) -> [FountainElementToken] {
+        guard let allowedChildren = line.allowedChildren else { return [line] }
+        var parsedTokens: [FountainElementToken] = []
+        for substring in line.content.allSubstrings().map({ String($0) }) {
+            for elementType in allowedChildren {
+                if elementType.regex.firstMatch(in: substring, range: NSRange(location: 0, length: substring.utf16.count)) != nil {
                     switch elementType {
                     case .titlePage:
-                        let element = FountainElementToken.titlePage(text: line).generateElement()
-                        if element.allowsChildren {
-                            element.childElements = parseInline(element.content)
-                        }
-                        elements.append(element)
-                    case .parenthetical:
-                        let element = FountainElementToken.parenthetical(text: line).generateElement()
-                        if element.allowsChildren {
-                            element.childElements = parseInline(element.content)
-                        }
-                        elements.append(element)
-                    case .centered:
-                        let element = FountainElementToken.centered(text: line).generateElement()
-                        if element.allowsChildren {
-                            element.childElements = parseInline(element.content)
-                        }
-                        elements.append(element)
-                    case .note:
-                        let element = FountainElementToken.note(text: line).generateElement()
-                        if element.allowsChildren {
-                            element.childElements = parseInline(element.content)
-                        }
-                        elements.append(element)
-                    case .boneyard:
-                        let element = FountainElementToken.boneyard(text: line).generateElement()
-                        if element.allowsChildren {
-                            element.childElements = parseInline(element.content)
-                        }
-                        elements.append(element)
-                    case .lineBreak:
-                        let element = FountainElementToken.lineBreak.generateElement()
-                        if element.allowsChildren {
-                            element.childElements = parseInline(element.content)
-                        }
-                        elements.append(element)
-                    case .emphasis(_, let style):
-                        let element = FountainElementToken.emphasis(text: line, style: style).generateElement()
-                        if element.allowsChildren {
-                            element.childElements = parseInline(element.content)
-                        }
-                        elements.append(element)
-                    default:
-                        print("Couldn't generate element somehow")
-                        continue
-                    }
-                }
-            }
-        }
-        
-        if !elements.isEmpty {
-            return elements
-        } else {
-            return nil
-        }
-    }
-    func parseInline(_ line: String) -> [FountainElement]? {
-        var elements: [FountainElement] = []
-        
-        for subString in line.components(separatedBy: "")
-            .combinations(ofCount: 1...line.count)
-            .map({ $0.joined() }) {
-            
-            for elementType in FountainInlineElement.allCases {
-                let range = elementType.regex.rangeOfFirstMatch(in: subString, range: NSRange(location: 0, length: subString.utf16.count))
-                if range != NSRange(location: NSNotFound, length: 0) {
-                    switch elementType {
+                        parsedTokens.append(.titlePage(text: substring))
+                    case .sceneHeading:
+                        parsedTokens.append(.sceneHeading(text: substring))
                     case .sceneNumber:
-                        elements.append(FountainElementToken.sceneNumber(text: (subString as NSString).substring(with: range)).generateElement())
+                        parsedTokens.append(.sceneNumber(text: substring))
+                    case .dialogue:
+                        parsedTokens.append(.dialogue(text: substring))
+                    case .parenthetical:
+                        parsedTokens.append(.parenthetical(text: substring))
+                    case .action:
+                        parsedTokens.append(.action(text: substring))
+                    case .centered:
+                        parsedTokens.append(.centered(text: substring))
+                    case .transition:
+                        parsedTokens.append(.transition(text: substring))
+                    case .section:
+                        parsedTokens.append(.section(text: substring))
+                    case .synopsis:
+                        parsedTokens.append(.synopsis(text: substring))
+                    case .note:
+                        parsedTokens.append(.note(text: substring))
                     case .inlineNote:
-                        elements.append(FountainElementToken.inlineNote(text: (subString as NSString).substring(with: range)).generateElement())
+                        parsedTokens.append(.inlineNote(text: substring))
+                    case .boneyard:
+                        parsedTokens.append(.boneyard(text: substring))
+                    case .pageBreak:
+                        parsedTokens.append(.pageBreak)
+                    case .lineBreak:
+                        parsedTokens.append(.lineBreak)
                     case .emphasis(_, let style):
-                        elements.append(FountainElementToken.emphasis(text: (subString as NSString).substring(with: range), style: style).generateElement())
-                    default:
-                        print("Couldn't generate element somehow")
-                        continue
+                        parsedTokens.append(.emphasis(text: substring, style: style))
                     }
                 }
             }
-            
         }
-        
-        if !elements.isEmpty {
-            return elements
-        } else {
-            return nil
-        }
+        guard parsedTokens != [] else { return [line] }
+        return parsedTokens
+    }
+    
+    func parseTokens(_ tokens: [FountainElementToken]) -> [FountainElement] {
+        let tokens = parseLines(tokens)
+        return tokens.map { $0.generateElement() }
     }
     
     /// Parses string representation of a script into a FountainScript object
@@ -190,15 +150,15 @@ public struct SwiftFountainParser {
         
         var scriptSplit = String(mutableScript).components(separatedBy: "\n\n")
         
-        var elements: [FountainElement] = []
+        var elements: [FountainElementToken] = []
         
         while scriptSplit.count != 0 {
-            if let element = parseBlock(scriptSplit[0]) {
+            if let element = lexBlock(scriptSplit[0]) {
                 elements.append(element)
             }
             scriptSplit.remove(at: 0)
         }
-        return FountainScript(elements: elements)
+        return FountainScript(elements: parseTokens(elements))
     }
     
     public func parseScript(from path: String) throws -> FountainScript {
@@ -211,5 +171,20 @@ public struct SwiftFountainParser {
     
     public func parseScript(fromURL path: URL) throws -> FountainScript {
         return parseScript(try String(contentsOf: path))
+    }
+}
+
+extension String {
+    func allSubstrings() -> [String] {
+        guard self.count != 0 else {
+            return []
+        }
+        var substrings: [String] = []
+        for i in 0...self.count - 1 {
+            for j in (i + 1)...self.count {
+                substrings.append(String(self[index(startIndex, offsetBy: i)..<index(startIndex, offsetBy: j)]))
+            }
+        }
+        return substrings
     }
 }

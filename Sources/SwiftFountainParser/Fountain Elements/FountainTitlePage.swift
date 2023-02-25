@@ -9,11 +9,11 @@ import Foundation
 
 public class FountainTitlePage: FountainLineElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .titlePage(text: self.content)
     }
     
     init(content: String) {
-        super.init(content: content, allowsChildren: true)
+        super.init(content: content)
     }
 }

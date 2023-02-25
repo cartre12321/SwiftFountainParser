@@ -7,13 +7,16 @@
 
 import Foundation
 
-public class FountainNote: FountainLineElement {
+public class FountainNote: FountainLineElement, FountainDelimiter {
     
-    override var type: FountainElementToken {
+    var openSymbol: String { "[[" }
+    var closeSymbol: String { "]]" }
+    
+    override var token: FountainElementToken {
         .note(text: self.content)
     }
     
     init(content: String) {
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content)
     }
 }

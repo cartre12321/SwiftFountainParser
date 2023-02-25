@@ -13,7 +13,4 @@ public class FountainBlockElement: FountainElement {
         FountainElementToken.allCases.filter { $0.canBeBlock }
     }
     
-    override init(content: String, allowsChildren: Bool) {
-        super.init(content: content, allowsChildren: allowsChildren)
-    }
 }

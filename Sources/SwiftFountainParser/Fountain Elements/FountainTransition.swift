@@ -9,11 +9,11 @@ import Foundation
 
 public class FountainTransition: FountainBlockElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .transition(text: self.content)
     }
     
     init(content: String) {
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content)
     }
 }

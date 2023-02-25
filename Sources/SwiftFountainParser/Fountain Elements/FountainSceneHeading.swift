@@ -9,10 +9,11 @@ import Foundation
 
 public class FountainSceneHeading: FountainBlockElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .sceneHeading(text: self.content)
     }
+    
     init(content: String) {
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content)
     }
 }

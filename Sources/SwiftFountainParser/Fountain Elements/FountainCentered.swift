@@ -7,11 +7,15 @@
 
 import Foundation
 
-public class FountainCentered: FountainLineElement {
-    override var type: FountainElementToken {
+public class FountainCentered: FountainLineElement, FountainDelimiter {
+    
+    var openSymbol: String { ">" }
+    var closeSymbol: String { "<" }
+    
+    override var token: FountainElementToken {
         .centered(text: self.content)
     }
     init(content: String) {
-        super.init(content: content, allowsChildren: true)
+        super.init(content: content)
     }
 }

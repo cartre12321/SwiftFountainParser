@@ -13,8 +13,4 @@ public class FountainLineElement: FountainElement {
         FountainElementToken.allCases.filter { $0.canBeLine }
     }
     
-    override init(content: String, allowsChildren: Bool) {
-        super.init(content: content, allowsChildren: allowsChildren)
-    }
-    
 }

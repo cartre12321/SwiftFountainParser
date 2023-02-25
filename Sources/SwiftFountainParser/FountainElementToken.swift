@@ -11,25 +11,25 @@ import Foundation
 
 public enum FountainElementToken: Equatable, CaseIterable {
     
-    case titlePage(text: String)
+    case titlePage(text: String, children: [FountainElementToken]? = nil)
     
-    case sceneHeading(text: String)
+    case sceneHeading(text: String, children: [FountainElementToken]? = nil)
     case sceneNumber(text: String)
     
-    case dialogue(text: String)
-    case parenthetical(text: String)
+    case dialogue(text: String, children: [FountainElementToken]? = nil)
+    case parenthetical(text: String, children: [FountainElementToken]? = nil)
     
-    case action(text: String)
-    case centered(text: String)
+    case action(text: String, children: [FountainElementToken]? = nil)
+    case centered(text: String, children: [FountainElementToken]? = nil)
     
     case transition(text: String)
     
-    case section(text: String)
-    case synopsis(text: String)
+    case section(text: String, children: [FountainElementToken]? = nil)
+    case synopsis(text: String, children: [FountainElementToken]? = nil)
     
-    case note(text: String)
-    case inlineNote(text: String)
-    case boneyard(text: String)
+    case note(text: String, children: [FountainElementToken]? = nil)
+    case inlineNote(text: String, children: [FountainElementToken]? = nil)
+    case boneyard(text: String, children: [FountainElementToken]? = nil)
     
     case pageBreak
     case lineBreak
@@ -75,37 +75,37 @@ public enum FountainElementToken: Equatable, CaseIterable {
     
     func generateElement() -> FountainElement {
         switch self {
-        case .titlePage(text: let text):
+        case .titlePage(let text, _):
             return FountainTitlePage(content: text)
-        case .sceneHeading(text: let text):
+        case .sceneHeading(let text, _):
             return FountainSceneHeading(content: text)
-        case .sceneNumber(text: let text):
+        case .sceneNumber(let text):
             return FountainSceneNumber(content: text)
-        case .dialogue(text: let text):
+        case .dialogue(let text, _):
             return FountainDialogue(content: text)
-        case .parenthetical(text: let text):
+        case .parenthetical(let text, _):
             return FountainParenthetical(content: text)
-        case .action(text: let text):
+        case .action(let text, _):
             return FountainAction(content: text)
-        case .centered(text: let text):
+        case .centered(let text, _):
             return FountainCentered(content: text)
-        case .transition(text: let text):
+        case .transition(let text):
             return FountainTransition(content: text)
-        case .section(text: let text):
+        case .section(let text, _):
             return FountainSection(content: text)
-        case .synopsis(text: let text):
+        case .synopsis(let text, _):
             return FountainSynopsis(content: text)
-        case .note(text: let text):
+        case .note(let text, _):
             return FountainNote(content: text)
-        case .inlineNote(text: let text):
+        case .inlineNote(let text, _):
             return FountainInlineNote(content: text)
-        case .boneyard(text: let text):
+        case .boneyard(let text, _):
             return FountainBoneyard(content: text)
         case .pageBreak:
             return FountainPageBreak()
         case .lineBreak:
             return FountainLineBreak()
-        case .emphasis(text: let text, style: let style):
+        case .emphasis(let text, style: let style):
             switch style {
             case .boldItalicUnderline:
                 return FountainBoldItalicUnderline(content: text)
@@ -122,6 +122,43 @@ public enum FountainElementToken: Equatable, CaseIterable {
             case .underline:
                 return FountainUnderline(content: text)
             }
+        }
+    }
+    
+    public var content: String {
+        switch self {
+        case .titlePage(let text, _):
+            return text
+        case .sceneHeading(let text, _):
+            return text
+        case .sceneNumber(let text):
+            return text
+        case .dialogue(let text, _):
+            return text
+        case .parenthetical(let text, _):
+            return text
+        case .action(let text, _):
+            return text
+        case .centered(let text, _):
+            return text
+        case .transition(let text):
+            return text
+        case .section(let text, _):
+            return text
+        case .synopsis(let text, _):
+            return text
+        case .note(let text, _):
+            return text
+        case .inlineNote(let text, _):
+            return text
+        case .boneyard(let text, _):
+            return text
+        case .pageBreak:
+            return "==="
+        case .lineBreak:
+            return "  "
+        case .emphasis(let text, _):
+            return text
         }
     }
     
@@ -236,6 +273,138 @@ public enum FountainElementToken: Equatable, CaseIterable {
         }
     }
     
+    public var allowedChildren: [FountainElementToken]? {
+        switch self {
+        case .titlePage:
+            return [.titlePage(text: "")] + FountainEmphasisStyle.tokens
+        case .sceneHeading:
+            return [.sceneNumber(text: "")]
+        case .sceneNumber:
+            return nil
+        case .dialogue:
+            return [.inlineNote(text: ""), .lineBreak, .parenthetical(text: "")] + FountainEmphasisStyle.tokens
+        case .parenthetical:
+            return FountainEmphasisStyle.tokens
+        case .action:
+            return [.centered(text: ""), .inlineNote(text: ""), .lineBreak] + FountainEmphasisStyle.tokens
+        case .centered:
+            return FountainEmphasisStyle.tokens
+        case .transition:
+            return nil
+        case .section:
+            return [
+                .synopsis(text: ""),
+                .section(text: ""),
+                .sceneHeading(text: ""),
+                .action(text: ""),
+                .centered(text: ""),
+                .dialogue(text: ""),
+                .transition(text: ""),
+                .note(text: ""),
+                .pageBreak,
+                .boneyard(text: "")
+            ]
+        case .synopsis:
+            return FountainEmphasisStyle.tokens
+        case .note:
+            return FountainEmphasisStyle.tokens
+        case .inlineNote:
+            return FountainEmphasisStyle.tokens
+        case .boneyard:
+            return [
+                .synopsis(text: ""),
+                .section(text: ""),
+                .sceneHeading(text: ""),
+                .action(text: ""),
+                .centered(text: ""),
+                .dialogue(text: ""),
+                .transition(text: ""),
+                .note(text: ""),
+                .pageBreak
+            ]
+        case .pageBreak:
+            return nil
+        case .lineBreak:
+            return nil
+        case .emphasis:
+            return nil
+        }
+    }
+    
+    public var childTokens: [FountainElementToken]? {
+        switch self {
+        case .titlePage(_, let children):
+            return children
+        case .sceneHeading(_, let children):
+            return children
+        case .sceneNumber:
+            return nil
+        case .dialogue(_, let children):
+            return children
+        case .parenthetical(_, let children):
+            return children
+        case .action(_, let children):
+            return children
+        case .centered(_, let children):
+            return children
+        case .transition:
+            return nil
+        case .section(_, let children):
+            return children
+        case .synopsis(_, let children):
+            return children
+        case .note(_, let children):
+            return children
+        case .inlineNote(_, let children):
+            return children
+        case .boneyard(_, let children):
+            return children
+        case .pageBreak:
+            return nil
+        case .lineBreak:
+            return nil
+        case .emphasis:
+            return nil
+        }
+    }
+    
+    public func newInstance(_ text: String) -> FountainElementToken {
+        switch self {
+        case .titlePage:
+            return .titlePage(text: text)
+        case .sceneHeading:
+            return .sceneHeading(text: text)
+        case .sceneNumber:
+            return .sceneNumber(text: text)
+        case .dialogue:
+            return .dialogue(text: text)
+        case .parenthetical:
+            return .parenthetical(text: text)
+        case .action:
+            return .action(text: text)
+        case .centered:
+            return .centered(text: text)
+        case .transition:
+            return .transition(text: text)
+        case .section:
+            return .section(text: text)
+        case .synopsis:
+            return .synopsis(text: text)
+        case .note:
+            return .note(text: text)
+        case .inlineNote:
+            return .inlineNote(text: text)
+        case .boneyard:
+            return .boneyard(text: text)
+        case .pageBreak:
+            return .pageBreak
+        case .lineBreak:
+            return .lineBreak
+        case .emphasis(_, let style):
+            return .emphasis(text: text, style: style)
+        }
+    }
+    
     public static var allCases: [FountainElementToken] {
         var cases: [FountainElementToken] = [
             .titlePage(text: ""),
@@ -253,9 +422,7 @@ public enum FountainElementToken: Equatable, CaseIterable {
             .pageBreak,
             .lineBreak
         ]
-        for style in FountainEmphasisStyle.allCases {
-            cases.append(.emphasis(text: "", style: style))
-        }
+        cases.append(contentsOf: FountainEmphasisStyle.tokens)
         cases.append(.action(text: ""))
         return cases
     }
@@ -288,6 +455,10 @@ public enum FountainEmphasisStyle: CaseIterable {
         case .underline:
             return try! NSRegularExpression(pattern: #"(_{1}(?=.+_{1}))(.+?)(_{1})"#)
         }
+    }
+    
+    static var tokens: [FountainElementToken] {
+        self.allCases.map({ FountainElementToken.emphasis(text: "", style: $0) })
     }
     
 }

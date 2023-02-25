@@ -9,7 +9,7 @@ import Foundation
 
 public class FountainAction: FountainBlockElement {
     
-    init(content: String) {
-        super.init(content: content, allowsChildren: true)
+    init(content: String, parent: FountainElementToken? = nil, childElements: [FountainElement]? = nil) {
+        super.init(content: content, parentToken: parent, childElements: childElements)
     }
 }

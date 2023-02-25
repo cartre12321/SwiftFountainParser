@@ -9,10 +9,11 @@ import Foundation
 
 public class FountainSceneNumber: FountainInlineElement {
     
-    override var type: FountainElementToken {
+    override var token: FountainElementToken {
         .sceneNumber(text: self.content)
     }
+    
     init(content: String) {
-        super.init(content: content, allowsChildren: false)
+        super.init(content: content)
     }
 }
